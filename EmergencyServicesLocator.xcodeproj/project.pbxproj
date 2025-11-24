@@ -29,6 +29,23 @@
 		150424222ED3B39400B5CDBC /* EmergencyServicesLocatorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EmergencyServicesLocatorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		1504243B2ED50F3000B5CDBC /* Exceptions for "EmergencyServicesLocatorUITests" folder in "EmergencyServicesLocatorTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				EmergencyServicesLocatorTests.swift,
+			);
+			target = 150424172ED3B39400B5CDBC /* EmergencyServicesLocatorTests */;
+		};
+		1504243C2ED50F3000B5CDBC /* Exceptions for "EmergencyServicesLocatorUITests" folder in "EmergencyServicesLocatorUITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				EmergencyServicesLocatorTests.swift,
+			);
+			target = 150424212ED3B39400B5CDBC /* EmergencyServicesLocatorUITests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		1504240D2ED3B39300B5CDBC /* EmergencyServicesLocator */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
@@ -42,6 +59,10 @@
 		};
 		150424252ED3B39400B5CDBC /* EmergencyServicesLocatorUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				1504243B2ED50F3000B5CDBC /* Exceptions for "EmergencyServicesLocatorUITests" folder in "EmergencyServicesLocatorTests" target */,
+				1504243C2ED50F3000B5CDBC /* Exceptions for "EmergencyServicesLocatorUITests" folder in "EmergencyServicesLocatorUITests" target */,
+			);
 			path = EmergencyServicesLocatorUITests;
 			sourceTree = "<group>";
 		};
