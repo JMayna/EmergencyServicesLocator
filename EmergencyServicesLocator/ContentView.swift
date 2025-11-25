@@ -21,6 +21,7 @@ struct ContentView: View {
                     .font(.largeTitle)
                     .fontWeight(.heavy)
                     .padding(.top)
+                    .foregroundColor(Color(red: 10/255, green: 57/255, blue: 102/255))
                 
                 // Grid of main buttons
                 LazyVGrid(columns: columns, spacing: 20) {
@@ -34,12 +35,12 @@ struct ContentView: View {
                 NavigationLink {
                     SDSCategoryScreen()
                 } label: {
-                    Text("SDS Sheet")
+                    Text("SDS Sheets")
                         .font(.title2)
                         .fontWeight(.bold)
                         .frame(maxWidth: .infinity, minHeight: 70)
-                        .background(Color.yellow.opacity(0.9))
-                        .foregroundColor(.black)
+                        .background(Color(red: 10/255, green: 57/255, blue: 102/255))
+                        .foregroundColor(.white)
                         .cornerRadius(20)
                 }
                 
@@ -51,18 +52,17 @@ struct ContentView: View {
     
     // MARK: - Big red grid buttons
     func bigButton(title: String) -> some View {
-        Button(action: {
-            // action here
-        }) {
+        Button(action: {}) {
             Text(title)
                 .font(.title2)
                 .fontWeight(.bold)
-                .frame(maxWidth: .infinity, minHeight: 120)
-                .background(Color.red.opacity(0.8))
                 .foregroundColor(.white)
+                .frame(maxWidth: .infinity, minHeight: 120)
+                .background(Color(red: 10/255, green: 57/255, blue: 102/255))
                 .cornerRadius(20)
         }
     }
+
 }
 
 #Preview {
