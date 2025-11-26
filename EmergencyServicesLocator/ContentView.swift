@@ -42,7 +42,6 @@ class TimesheetViewModel: ObservableObject {
     }
 }
 
-
 struct ContentView: View {
     
     @StateObject var receiptVM = EmailViewModel()
@@ -60,7 +59,7 @@ struct ContentView: View {
                 // MARK: - Background Gradient
                 LinearGradient(
                     colors: [
-                        Color(red: 245/255, green: 249/255, blue: 253/255),
+                        Color(red: 240/255, green: 243/255, blue: 247/255),
                         Color(red: 225/255, green: 235/255, blue: 245/255)
                     ],
                     startPoint: .top,
@@ -73,57 +72,47 @@ struct ContentView: View {
                     // MARK: - Header
                     VStack(spacing: 6) {
                         Text("The Elliott Companies")
-                            .font(.largeTitle)
-                            .fontWeight(.heavy)
+                            .font(.largeTitle.bold())
                             .foregroundColor(Color(red: 10/255, green: 57/255, blue: 102/255))
                         
-                        Text("Emergency Services Directory")
+                        Text("Multi-Trades Commerical Contracting")
                             .font(.headline)
                             .foregroundColor(.gray)
                     }
                     .padding(.top, 20)
                     
-                    // MARK: - Main Button Grid
-                    LazyVGrid(columns: columns, spacing: 20) {
+                    // MARK: - Modern Card Button Grid
+                    LazyVGrid(columns: columns, spacing: 22) {
                         
-                        polishedButton(title: "Fire")
-                        polishedButton(title: "EMS")
-                        polishedButton(title: "Police")
-                        polishedButton(title: "Rescue Squad")
+                        modernCardButton(title: "Fire")
+                        modernCardButton(title: "EMS")
+                        modernCardButton(title: "Police")
+                        modernCardButton(title: "Rescue Squad")
                         
                         // Incident Report Navigation
                         NavigationLink {
                             IncidentReportView()
                         } label: {
-                            polishedNavButton(title: "Incident Report")
+                            modernCardNavButton(title: "Incident Report")
                         }
                         
                         // Email Receipt
-                        polishedButton(title: "Email Receipt") {
+                        modernCardButton(title: "Email Receipt") {
                             receiptVM.startFlow()
                         }
                         
                         // Email Timesheet
-                        polishedButton(title: "Email Timesheet") {
+                        modernCardButton(title: "Email Timesheet") {
                             timesheetVM.startFlow()
                         }
+
+                        // ⭐ SDS inside the grid — same size as all cards
+                        NavigationLink {
+                            SDSCategoryScreen()
+                        } label: {
+                            modernCardNavButton(title: "SDS Sheets")
+                        }
                     }
-                    .padding(.horizontal)
-                    
-                    // MARK: - SDS Button
-                    NavigationLink {
-                        SDSCategoryScreen()
-                    } label: {
-                        Text("SDS Sheets")
-                            .font(.title3)
-                            .fontWeight(.bold)
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity, minHeight: 75)
-                            .background(Color(red: 10/255, green: 57/255, blue: 102/255))
-                            .cornerRadius(20)
-                            .shadow(color: .black.opacity(0.15), radius: 6, x: 0, y: 4)
-                    }
-                    .buttonStyle(ScaleButtonStyle())
                     .padding(.horizontal)
                     
                     Spacer()
@@ -173,7 +162,7 @@ struct ContentView: View {
                 MailView(
                     subject: "Timesheet Submission",
                     body: "Attached is the timesheet.",
-                    recipients: ["elliottapptestemail@gmail.com"], // Change later
+                    recipients: ["elliottapptestemail@gmail.com"],
                     attachments: [
                         AttachmentData(
                             data: data,
@@ -187,36 +176,42 @@ struct ContentView: View {
     }
     
     
-    // MARK: - Polished Action Button
-    func polishedButton(title: String, action: @escaping () -> Void = {}) -> some View {
+    // MARK: - ⭐ Modern Action Button
+    func modernCardButton(title: String, action: @escaping () -> Void = {}) -> some View {
         Button(action: action) {
             Text(title)
-                .font(.title3)
-                .fontWeight(.bold)
+                .font(.title3.weight(.semibold))
                 .foregroundColor(.white)
-                .frame(maxWidth: .infinity, minHeight: 110)
-                .background(Color(red: 10/255, green: 57/255, blue: 102/255))
-                .cornerRadius(20)
-                .shadow(color: .black.opacity(0.15), radius: 6, x: 0, y: 4)
+                .padding(.horizontal, 20)
+                .padding(.vertical, 30)
+                .frame(maxWidth: .infinity, minHeight: 130)
+                .background(
+                    RoundedRectangle(cornerRadius: 32, style: .continuous)
+                        .fill(Color(red: 10/255, green: 57/255, blue: 102/255))
+                        .shadow(color: .black.opacity(0.20), radius: 10, x: 0, y: 6)
+                )
         }
         .buttonStyle(ScaleButtonStyle())
     }
     
-    // MARK: - Polished Navigation Button (No Button inside)
-    func polishedNavButton(title: String) -> some View {
+    // MARK: - ⭐ Modern Navigation Card
+    func modernCardNavButton(title: String) -> some View {
         Text(title)
-            .font(.title3)
-            .fontWeight(.bold)
+            .font(.title3.weight(.semibold))
             .foregroundColor(.white)
-            .frame(maxWidth: .infinity, minHeight: 110)
-            .background(Color(red: 10/255, green: 57/255, blue: 102/255))
-            .cornerRadius(20)
-            .shadow(color: .black.opacity(0.15), radius: 6, x: 0, y: 4)
+            .padding(.horizontal, 20)
+            .padding(.vertical, 30)
+            .frame(maxWidth: .infinity, minHeight: 130)
+            .background(
+                RoundedRectangle(cornerRadius: 32, style: .continuous)
+                    .fill(Color(red: 10/255, green: 57/255, blue: 102/255))
+                    .shadow(color: .black.opacity(0.20), radius: 10, x: 0, y: 6)
+            )
     }
 }
 
 
-// MARK: - Button Scale Animation
+// MARK: - Button Tap Animation
 struct ScaleButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
@@ -224,7 +219,6 @@ struct ScaleButtonStyle: ButtonStyle {
             .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
     }
 }
-
 
 #Preview {
     ContentView()
