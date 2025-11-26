@@ -54,20 +54,8 @@ struct ContentView: View {
     
     var body: some View {
         NavigationStack {
-            ZStack {
-                
-                // MARK: - Background Gradient
-                LinearGradient(
-                    colors: [
-                        Color(red: 240/255, green: 243/255, blue: 247/255),
-                        Color(red: 225/255, green: 235/255, blue: 245/255)
-                    ],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-                .ignoresSafeArea()
-                
-                VStack(spacing: 30) {
+            ScrollView {
+                VStack(spacing: 40) {
                     
                     // MARK: - Header
                     VStack(spacing: 6) {
@@ -75,55 +63,87 @@ struct ContentView: View {
                             .font(.largeTitle.bold())
                             .foregroundColor(Color(red: 10/255, green: 57/255, blue: 102/255))
                         
-                        Text("Multi-Trades Commerical Contracting")
+                        Text("Employee Tools")
                             .font(.headline)
                             .foregroundColor(.gray)
                     }
-                    .padding(.top, 20)
+                    .padding(.top, 30)
                     
-                    // MARK: - Modern Card Button Grid
-                    LazyVGrid(columns: columns, spacing: 22) {
+                    
+                    // ========================================================
+                    // MARK: - OPERATIONS
+                    // ========================================================
+                    VStack(alignment: .leading, spacing: 16) {
                         
-                        modernCardButton(title: "Fire")
-                        modernCardButton(title: "EMS")
-                        modernCardButton(title: "Police")
-                        modernCardButton(title: "Rescue Squad")
+                        Text("Operations")
+                            .font(.title2.bold())
+                            .padding(.leading)
+                            .foregroundColor(Color(red: 10/255, green: 57/255, blue: 102/255))
                         
-                        // Incident Report Navigation
-                        NavigationLink {
-                            IncidentReportView()
-                        } label: {
-                            modernCardNavButton(title: "Incident Report")
+                        LazyVGrid(columns: columns, spacing: 20) {
+                            
+                            NavigationLink {
+                                IncidentReportView()
+                            } label: {
+                                enterpriseCardNavButton(title: "Incident Report")
+                            }
+                            
+                            NavigationLink {
+                                SDSCategoryScreen()
+                            } label: {
+                                enterpriseCardNavButton(title: "SDS Sheets")
+                            }
                         }
-                        
-                        // Email Receipt
-                        modernCardButton(title: "Email Receipt") {
-                            receiptVM.startFlow()
-                        }
-                        
-                        // Email Timesheet
-                        modernCardButton(title: "Email Timesheet") {
-                            timesheetVM.startFlow()
-                        }
-
-                        // ⭐ SDS inside the grid — same size as all cards
-                        NavigationLink {
-                            SDSCategoryScreen()
-                        } label: {
-                            modernCardNavButton(title: "SDS Sheets")
-                        }
+                        .padding(.horizontal)
                     }
-                    .padding(.horizontal)
+                    
+                    
+                    // ========================================================
+                    // MARK: - ACCOUNTING
+                    // ========================================================
+                    VStack(alignment: .leading, spacing: 16) {
+                        
+                        Text("Accounting")
+                            .font(.title2.bold())
+                            .padding(.leading)
+                            .foregroundColor(Color(red: 10/255, green: 57/255, blue: 102/255))
+                        
+                        LazyVGrid(columns: columns, spacing: 20) {
+                            
+                            enterpriseCardButton(title: "Email Receipt") {
+                                receiptVM.startFlow()
+                            }
+                            
+                            enterpriseCardButton(title: "Email Timesheet") {
+                                timesheetVM.startFlow()
+                            }
+                        }
+                        .padding(.horizontal)
+                    }
                     
                     Spacer()
+                        .frame(height: 40)
                 }
             }
+            // Background
+            .background(
+                LinearGradient(
+                    colors: [
+                        Color(red: 245/255, green: 247/255, blue: 251/255),
+                        Color(red: 230/255, green: 235/255, blue: 244/255)
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .ignoresSafeArea()
+            )
         }
+        
         
         // MARK: - Receipt Camera
         .sheet(isPresented: $receiptVM.showImagePicker) {
-            ImagePicker(sourceType: .camera) { image in
-                receiptVM.imagePicked(image)
+            ImagePicker(sourceType: .camera) { img in
+                receiptVM.imagePicked(img)
             }
         }
         
@@ -149,8 +169,8 @@ struct ContentView: View {
         
         // MARK: - Timesheet Camera
         .sheet(isPresented: $timesheetVM.showImagePicker) {
-            ImagePicker(sourceType: .camera) { image in
-                timesheetVM.imagePicked(image)
+            ImagePicker(sourceType: .camera) { img in
+                timesheetVM.imagePicked(img)
             }
         }
         
@@ -176,47 +196,55 @@ struct ContentView: View {
     }
     
     
-    // MARK: - ⭐ Modern Action Button
-    func modernCardButton(title: String, action: @escaping () -> Void = {}) -> some View {
+    // ========================================================
+    // MARK: - Enhanced Enterprise Card Buttons
+    // ========================================================
+    
+    func enterpriseCardButton(title: String, action: @escaping () -> Void = {}) -> some View {
         Button(action: action) {
-            Text(title)
-                .font(.title3.weight(.semibold))
-                .foregroundColor(.white)
-                .padding(.horizontal, 20)
-                .padding(.vertical, 30)
-                .frame(maxWidth: .infinity, minHeight: 130)
-                .background(
-                    RoundedRectangle(cornerRadius: 32, style: .continuous)
-                        .fill(Color(red: 10/255, green: 57/255, blue: 102/255))
-                        .shadow(color: .black.opacity(0.20), radius: 10, x: 0, y: 6)
-                )
+            enterpriseCardStyle(title: title)
         }
-        .buttonStyle(ScaleButtonStyle())
     }
     
-    // MARK: - ⭐ Modern Navigation Card
-    func modernCardNavButton(title: String) -> some View {
-        Text(title)
-            .font(.title3.weight(.semibold))
-            .foregroundColor(.white)
-            .padding(.horizontal, 20)
-            .padding(.vertical, 30)
-            .frame(maxWidth: .infinity, minHeight: 130)
-            .background(
-                RoundedRectangle(cornerRadius: 32, style: .continuous)
-                    .fill(Color(red: 10/255, green: 57/255, blue: 102/255))
-                    .shadow(color: .black.opacity(0.20), radius: 10, x: 0, y: 6)
-            )
+    func enterpriseCardNavButton(title: String) -> some View {
+        enterpriseCardStyle(title: title)
+    }
+    
+    // MARK: - Shared Card Layout
+    func enterpriseCardStyle(title: String) -> some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 6) {
+                Text(title)
+                    .font(.title3.weight(.semibold))
+                    .foregroundColor(Color(red: 25/255, green: 40/255, blue: 70/255))
+            }
+            Spacer()
+        }
+        .padding(22)
+        .frame(maxWidth: .infinity, minHeight: 120)
+        .background(
+            RoundedRectangle(cornerRadius: 22)
+                .fill(Color.white)
+                .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
+                .shadow(color: Color.black.opacity(0.08), radius: 10, x: 0, y: 6)
+                .overlay(
+                    Rectangle()
+                        .fill(Color(red: 10/255, green: 57/255, blue: 102/255))
+                        .frame(width: 6)
+                        .clipShape(
+                            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                        ),
+                    alignment: .leading
+                )
+        )
     }
 }
 
 
-// MARK: - Button Tap Animation
+// MARK: - No Bounce Highlight (Tap Animation Off)
 struct ScaleButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .scaleEffect(configuration.isPressed ? 0.96 : 1.0)
-            .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
     }
 }
 
