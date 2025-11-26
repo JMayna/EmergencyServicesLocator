@@ -12,7 +12,7 @@ struct IncidentReportView: View {
     
     // MARK: - Injured Person Information
     @State private var injuredName = ""
-    @State private var injuredOccupation = ""   // starts blank
+    @State private var injuredOccupation = ""
     
     let occupationList = [
         "Carpenter",
@@ -39,7 +39,7 @@ struct IncidentReportView: View {
     // MARK: - Injury Information
     @State private var injuredPersonDescription = ""
     
-    @State private var injuryType = ""      // starts blank
+    @State private var injuryType = ""
     let injuryTypeList = [
         "Minor cuts, abrasions, bruises, sprains or strains (only first aid required on site)",
         "Minor punctures, skin ripped, injury made by small object injury",
@@ -51,7 +51,7 @@ struct IncidentReportView: View {
         "Near Miss Incident (An Incident that could have caused an injury)."
     ]
     
-    @State private var treatmentProvided = ""  // starts blank
+    @State private var treatmentProvided = ""
     let treatmentList = [
         "Minor first aid provided by injured person on site",
         "Minor first aid assistance by an on-site person",
@@ -88,7 +88,6 @@ struct IncidentReportView: View {
     
     // MARK: - Email
     @State private var showMail = false
-    @State private var mailData: Data? = nil
     
     var body: some View {
         Form {
@@ -101,49 +100,46 @@ struct IncidentReportView: View {
             // MARK: - Incident Details
             Section(header: Text("Incident Details:")) {
                 DatePicker("Date of Accident:", selection: $incidentDate, displayedComponents: .date)
-                
                 DatePicker("Time of Accident:", selection: $incidentTime, displayedComponents: .hourAndMinute)
                 
-                TextField("Accident Location (Include: Floor, Building, Job Name, 911 Address, City and State)",
-                          text: $incidentLocation)
+                TextField("Accident Location (Include: Floor, Building, Job Name, 911 Address, City and State)", text: $incidentLocation)
             }
             
-            // MARK: - Injured Person
+            // MARK: Injured Information
             Section(header: Text("Injured Individuals Information")) {
                 TextField("Injured Person's Name: First and Last", text: $injuredName)
                 
                 Picker("Injured Person's Occupation", selection: $injuredOccupation) {
-                    Text("Select Occupation").tag("")   // ⭐ FIXED
+                    Text("Select Occupation").tag("")
                     ForEach(occupationList, id: \.self) { job in
                         Text(job).tag(job)
                     }
                 }
             }
             
-            // MARK: - Supervisor
+            // MARK: Supervisor
             Section(header: Text("Injured Persons Immediate Supervisors Information")) {
                 TextField("Immediate Supervisors Name:", text: $supervisorName)
                 TextField("Immediate Supervisors Phone Number", text: $supervisorPhone)
                     .keyboardType(.phonePad)
             }
             
-            // MARK: - Injury Info
+            // MARK: Injury Information
             Section(header: Text("Injury Information")) {
                 
                 Text("Note Here, in the injured persons own words, their version of what happened (before, during, and immediately after the incident):")
-                
                 TextEditor(text: $injuredPersonDescription)
                     .frame(minHeight: 140)
                 
                 Picker("Pick a statement that best describes the injury:", selection: $injuryType) {
-                    Text("Select Injury Type").tag("")       // ⭐ FIXED
+                    Text("Select Injury Type").tag("")
                     ForEach(injuryTypeList, id: \.self) { item in
                         Text(item).tag(item)
                     }
                 }
                 
                 Picker("Describe any first or treatment known to be provided:", selection: $treatmentProvided) {
-                    Text("Select Treatment Provided").tag("") // ⭐ FIXED
+                    Text("Select Treatment Provided").tag("")
                     ForEach(treatmentList, id: \.self) { item in
                         Text(item).tag(item)
                     }
@@ -155,8 +151,10 @@ struct IncidentReportView: View {
                         .padding(.bottom, 4)
                     
                     ForEach(causeList, id: \.self) { cause in
-                        MultipleSelectionRow(title: cause,
-                                             isSelected: selectedCauses.contains(cause)) {
+                        MultipleSelectionRow(
+                            title: cause,
+                            isSelected: selectedCauses.contains(cause)
+                        ) {
                             if selectedCauses.contains(cause) {
                                 selectedCauses.remove(cause)
                             } else {
@@ -167,13 +165,13 @@ struct IncidentReportView: View {
                 }
             }
             
-            // MARK: - More Details
+            // MARK: More Details
             Section(header: Text("More Details and Notes")) {
                 TextEditor(text: $moreDetails)
                     .frame(minHeight: 140)
             }
             
-            // MARK: - Photos
+            // MARK: Photos
             Section(header: Text("Optional Photos")) {
                 
                 ScrollView(.horizontal) {
@@ -206,10 +204,10 @@ struct IncidentReportView: View {
                 }
             }
             
-            // MARK: - Submit
+            // MARK: Submit
             Section {
                 Button("Submit Report") {
-                    buildReport()
+                    showMail = true
                 }
                 .font(.headline)
                 .frame(maxWidth: .infinity)
@@ -217,37 +215,30 @@ struct IncidentReportView: View {
         }
         .navigationTitle("Incident Report")
         
-        // Image Picker Sheet
+        // Photo picker
         .sheet(isPresented: $showImagePicker) {
             ImagePicker(sourceType: .camera) { image in
-                if let img = image {
-                    images.append(img)
-                }
+                if let img = image { images.append(img) }
             }
         }
         
-        // ⭐ FIX — Wait for mailData before opening the email sheet
-        .onChange(of: mailData) { _, newValue in
-            if newValue != nil {
-                DispatchQueue.main.async {
-                    showMail = true
-                }
-            }
-        }
-        
-        // Mail Composer
+        // Mail sheet
         .sheet(isPresented: $showMail) {
             MailView(
                 subject: "Incident Report Submission",
-                body: "Attached is the completed incident report.",
+                body: "Attached are the incident report files.",
                 recipients: ["elliottapptestemail@gmail.com"],
                 attachments: buildAttachments()
             )
         }
     }
     
-    // MARK: - Report Text
-    func buildReport() {
+    
+    // MARK: - Combine PDF + TXT + individual photos
+    func buildAttachments() -> [AttachmentData] {
+        var attachments: [AttachmentData] = []
+        
+        // Build raw text for report
         let report = """
         INCIDENT REPORT
 
@@ -283,33 +274,37 @@ struct IncidentReportView: View {
         \(moreDetails)
         """
         
-        print("REPORT CONTENT:\n", report)
-        
-        // Save report text
-        mailData = report.data(using: .utf8)
-    }
-    
-    // MARK: - Attachments Builder
-    func buildAttachments() -> [AttachmentData] {
-        var files: [AttachmentData] = []
-        
-        // Text report
-        if let data = mailData {
-            files.append(
+        // 1️⃣ TXT FILE
+        if let textData = report.data(using: .utf8) {
+            attachments.append(
                 AttachmentData(
-                    data: data,
+                    data: textData,
                     mimeType: "text/plain",
                     fileName: "IncidentReport.txt"
                 )
             )
         }
         
-        // Images
+        // 2️⃣ PDF FILE
+        let pdfData = PDFGenerator.generateIncidentPDF(
+            reportText: report,
+            photos: images
+        )
+        
+        attachments.append(
+            AttachmentData(
+                data: pdfData,
+                mimeType: "application/pdf",
+                fileName: "IncidentReport.pdf"
+            )
+        )
+        
+        // 3️⃣ INDIVIDUAL PHOTOS
         for (index, img) in images.enumerated() {
-            if let data = img.jpegData(compressionQuality: 0.8) {
-                files.append(
+            if let imgData = img.jpegData(compressionQuality: 0.8) {
+                attachments.append(
                     AttachmentData(
-                        data: data,
+                        data: imgData,
                         mimeType: "image/jpeg",
                         fileName: "Photo\(index + 1).jpg"
                     )
@@ -317,11 +312,11 @@ struct IncidentReportView: View {
             }
         }
         
-        print("ATTACHMENTS:", files.map { $0.fileName })
-        
-        return files
+        return attachments
     }
 }
+
+
 
 // MARK: - Multi Select Row
 struct MultipleSelectionRow: View {
