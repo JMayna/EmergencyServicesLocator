@@ -4,8 +4,28 @@
 //
 
 import SwiftUI
+import MessageUI
+
+class EmailViewModel: ObservableObject {
+    @Published var selectedImage: UIImage?
+    @Published var showImagePicker = false
+    @Published var showMailView = false
+    
+    func startEmailFlow() {
+        showImagePicker = true
+    }
+    
+    func imagePicked(_ image: UIImage?) {
+        selectedImage = image
+        if image != nil {
+            showMailView = true
+        }
+    }
+}
 
 struct ContentView: View {
+    
+    @StateObject var emailVM = EmailViewModel()
     
     let columns = [
         GridItem(.flexible(), spacing: 20),
@@ -44,10 +64,18 @@ struct ContentView: View {
                     
                     // MARK: - Button Grid
                     LazyVGrid(columns: columns, spacing: 20) {
+                        
                         polishedButton(title: "Fire")
                         polishedButton(title: "EMS")
                         polishedButton(title: "Police")
                         polishedButton(title: "Rescue Squad")
+                        
+                        // Custom action for the new Email Receipt button
+                        polishedButton(title: "Email Receipt") {
+                            emailVM.startEmailFlow()
+                        }
+                        
+                        polishedButton(title: "Email Timesheet")
                     }
                     .padding(.horizontal)
                     
@@ -71,12 +99,29 @@ struct ContentView: View {
                 }
             }
         }
+        // MARK: - Image Picker Sheet
+        .sheet(isPresented: $emailVM.showImagePicker) {
+            ImagePicker(sourceType: .camera) { image in
+                emailVM.imagePicked(image)
+            }
+        }
+        // MARK: - Mail Composer Sheet
+        .sheet(isPresented: $emailVM.showMailView) {
+            if let data = emailVM.selectedImage?.jpegData(compressionQuality: 0.8) {
+                MailView(
+                    subject: "Receipt Submission",
+                    body: "Attached is the receipt.",
+                    recipients: ["elliottapptestemail@gmail.com"],
+                    attachment: data
+                )
+            }
+        }
     }
     
     
     // MARK: - Polished Reusable Button
-    func polishedButton(title: String) -> some View {
-        Button(action: {}) {
+    func polishedButton(title: String, action: @escaping () -> Void = {}) -> some View {
+        Button(action: action) {
             Text(title)
                 .font(.title3)
                 .fontWeight(.bold)
@@ -99,6 +144,7 @@ struct ScaleButtonStyle: ButtonStyle {
             .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
     }
 }
+
 
 
 #Preview {
