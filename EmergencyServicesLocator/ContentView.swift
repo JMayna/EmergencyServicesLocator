@@ -6,12 +6,13 @@
 import SwiftUI
 import MessageUI
 
+// MARK: - Email Receipt ViewModel
 class EmailViewModel: ObservableObject {
     @Published var selectedImage: UIImage?
     @Published var showImagePicker = false
     @Published var showMailView = false
     
-    func startEmailFlow() {
+    func startFlow() {
         showImagePicker = true
     }
     
@@ -23,9 +24,29 @@ class EmailViewModel: ObservableObject {
     }
 }
 
+// MARK: - Timesheet Email ViewModel
+class TimesheetViewModel: ObservableObject {
+    @Published var selectedImage: UIImage?
+    @Published var showImagePicker = false
+    @Published var showMailView = false
+    
+    func startFlow() {
+        showImagePicker = true
+    }
+    
+    func imagePicked(_ image: UIImage?) {
+        selectedImage = image
+        if image != nil {
+            showMailView = true
+        }
+    }
+}
+
+
 struct ContentView: View {
     
-    @StateObject var emailVM = EmailViewModel()
+    @StateObject var receiptVM = EmailViewModel()
+    @StateObject var timesheetVM = TimesheetViewModel()
     
     let columns = [
         GridItem(.flexible(), spacing: 20),
@@ -62,7 +83,7 @@ struct ContentView: View {
                     }
                     .padding(.top, 20)
                     
-                    // MARK: - Button Grid
+                    // MARK: - Main Button Grid
                     LazyVGrid(columns: columns, spacing: 20) {
                         
                         polishedButton(title: "Fire")
@@ -70,19 +91,22 @@ struct ContentView: View {
                         polishedButton(title: "Police")
                         polishedButton(title: "Rescue Squad")
                         
-                        // INCIDENT REPORT BUTTON (NavigationLink)
+                        // Incident Report Navigation
                         NavigationLink {
                             IncidentReportView()
                         } label: {
                             polishedNavButton(title: "Incident Report")
                         }
                         
-                        // EMAIL RECEIPT BUTTON
+                        // Email Receipt
                         polishedButton(title: "Email Receipt") {
-                            emailVM.startEmailFlow()
+                            receiptVM.startFlow()
                         }
                         
-                        polishedButton(title: "Email Timesheet")
+                        // Email Timesheet
+                        polishedButton(title: "Email Timesheet") {
+                            timesheetVM.startFlow()
+                        }
                     }
                     .padding(.horizontal)
                     
@@ -107,37 +131,63 @@ struct ContentView: View {
             }
         }
         
-        // MARK: - Image Picker Sheet
-        .sheet(isPresented: $emailVM.showImagePicker) {
+        // MARK: - Receipt Camera
+        .sheet(isPresented: $receiptVM.showImagePicker) {
             ImagePicker(sourceType: .camera) { image in
-                emailVM.imagePicked(image)
+                receiptVM.imagePicked(image)
             }
         }
         
-        // MARK: - Mail Composer Sheet
-        .sheet(isPresented: $emailVM.showMailView) {
-            if let data = emailVM.selectedImage?.jpegData(compressionQuality: 0.8) {
-                
-                let attachments = [
-                    AttachmentData(
-                        data: data,
-                        mimeType: "image/jpeg",
-                        fileName: "Receipt.jpg"
-                    )
-                ]
+        // MARK: - Receipt Email
+        .sheet(isPresented: $receiptVM.showMailView) {
+            if let img = receiptVM.selectedImage,
+               let data = img.jpegData(compressionQuality: 0.8) {
                 
                 MailView(
                     subject: "Receipt Submission",
                     body: "Attached is the receipt.",
                     recipients: ["elliottapptestemail@gmail.com"],
-                    attachments: attachments
+                    attachments: [
+                        AttachmentData(
+                            data: data,
+                            mimeType: "image/jpeg",
+                            fileName: "Receipt.jpg"
+                        )
+                    ]
                 )
             }
         }
-
+        
+        // MARK: - Timesheet Camera
+        .sheet(isPresented: $timesheetVM.showImagePicker) {
+            ImagePicker(sourceType: .camera) { image in
+                timesheetVM.imagePicked(image)
+            }
+        }
+        
+        // MARK: - Timesheet Email
+        .sheet(isPresented: $timesheetVM.showMailView) {
+            if let img = timesheetVM.selectedImage,
+               let data = img.jpegData(compressionQuality: 0.8) {
+                
+                MailView(
+                    subject: "Timesheet Submission",
+                    body: "Attached is the timesheet.",
+                    recipients: ["elliottapptestemail@gmail.com"], // Change later
+                    attachments: [
+                        AttachmentData(
+                            data: data,
+                            mimeType: "image/jpeg",
+                            fileName: "Timesheet.jpg"
+                        )
+                    ]
+                )
+            }
+        }
     }
     
-    // MARK: - Polished Reusable Button (Action-based)
+    
+    // MARK: - Polished Action Button
     func polishedButton(title: String, action: @escaping () -> Void = {}) -> some View {
         Button(action: action) {
             Text(title)
@@ -152,7 +202,7 @@ struct ContentView: View {
         .buttonStyle(ScaleButtonStyle())
     }
     
-    // MARK: - Polished Navigation Button (For NavigationLink)
+    // MARK: - Polished Navigation Button (No Button inside)
     func polishedNavButton(title: String) -> some View {
         Text(title)
             .font(.title3)
@@ -162,12 +212,11 @@ struct ContentView: View {
             .background(Color(red: 10/255, green: 57/255, blue: 102/255))
             .cornerRadius(20)
             .shadow(color: .black.opacity(0.15), radius: 6, x: 0, y: 4)
-
     }
 }
 
 
-// MARK: - Press Animation (Scale Effect)
+// MARK: - Button Scale Animation
 struct ScaleButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
