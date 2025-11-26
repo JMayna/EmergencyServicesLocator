@@ -1,43 +1,21 @@
-//
-//  MailView.swift
-//  EmergencyServicesLocator
-//
-//  Created by Jordan Maynard on 11/25/25.
-//
-
 import SwiftUI
 import MessageUI
 
+struct AttachmentData {
+    let data: Data
+    let mimeType: String
+    let fileName: String
+}
+
 struct MailView: UIViewControllerRepresentable {
     
-    @Environment(\.dismiss) var dismiss
-    let subject: String
-    let body: String
-    let recipients: [String]
-    let attachment: Data?
+    var subject: String
+    var body: String
+    var recipients: [String]
+    var attachments: [AttachmentData] = []
     
-    func makeUIViewController(context: Context) -> MFMailComposeViewController {
-        let vc = MFMailComposeViewController()
-        vc.setSubject(subject)
-        vc.setMessageBody(body, isHTML: false)
-        vc.setToRecipients(recipients)
-        vc.mailComposeDelegate = context.coordinator
-        
-        if let attachment {
-            vc.addAttachmentData(attachment, mimeType: "image/jpeg", fileName: "receipt.jpg")
-        }
-        
-        return vc
-    }
-    
-    func updateUIViewController(_ uiViewController: MFMailComposeViewController, context: Context) {}
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-
     class Coordinator: NSObject, MFMailComposeViewControllerDelegate {
-        let parent: MailView
+        var parent: MailView
         
         init(_ parent: MailView) {
             self.parent = parent
@@ -46,7 +24,28 @@ struct MailView: UIViewControllerRepresentable {
         func mailComposeController(_ controller: MFMailComposeViewController,
                                    didFinishWith result: MFMailComposeResult,
                                    error: Error?) {
-            parent.dismiss()
+            controller.dismiss(animated: true)
         }
     }
+    
+    func makeUIViewController(context: Context) -> MFMailComposeViewController {
+        let vc = MFMailComposeViewController()
+        vc.mailComposeDelegate = context.coordinator
+        
+        vc.setSubject(subject)
+        vc.setToRecipients(recipients)
+        vc.setMessageBody(body, isHTML: false)
+        
+        
+        for item in attachments {
+            vc.addAttachmentData(item.data,
+                                 mimeType: item.mimeType,
+                                 fileName: item.fileName)
+        }
+        
+        return vc
+    }
+    
+    func updateUIViewController(_ uiViewController: MFMailComposeViewController, context: Context) { }
+    func makeCoordinator() -> Coordinator { Coordinator(self) }
 }

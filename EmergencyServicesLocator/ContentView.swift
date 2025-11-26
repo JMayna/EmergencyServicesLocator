@@ -70,7 +70,14 @@ struct ContentView: View {
                         polishedButton(title: "Police")
                         polishedButton(title: "Rescue Squad")
                         
-                        // Custom action for the new Email Receipt button
+                        // INCIDENT REPORT BUTTON (NavigationLink)
+                        NavigationLink {
+                            IncidentReportView()
+                        } label: {
+                            polishedNavButton(title: "Incident Report")
+                        }
+                        
+                        // EMAIL RECEIPT BUTTON
                         polishedButton(title: "Email Receipt") {
                             emailVM.startEmailFlow()
                         }
@@ -99,27 +106,38 @@ struct ContentView: View {
                 }
             }
         }
+        
         // MARK: - Image Picker Sheet
         .sheet(isPresented: $emailVM.showImagePicker) {
             ImagePicker(sourceType: .camera) { image in
                 emailVM.imagePicked(image)
             }
         }
+        
         // MARK: - Mail Composer Sheet
         .sheet(isPresented: $emailVM.showMailView) {
             if let data = emailVM.selectedImage?.jpegData(compressionQuality: 0.8) {
+                
+                let attachments = [
+                    AttachmentData(
+                        data: data,
+                        mimeType: "image/jpeg",
+                        fileName: "Receipt.jpg"
+                    )
+                ]
+                
                 MailView(
                     subject: "Receipt Submission",
                     body: "Attached is the receipt.",
                     recipients: ["elliottapptestemail@gmail.com"],
-                    attachment: data
+                    attachments: attachments
                 )
             }
         }
+
     }
     
-    
-    // MARK: - Polished Reusable Button
+    // MARK: - Polished Reusable Button (Action-based)
     func polishedButton(title: String, action: @escaping () -> Void = {}) -> some View {
         Button(action: action) {
             Text(title)
@@ -133,6 +151,19 @@ struct ContentView: View {
         }
         .buttonStyle(ScaleButtonStyle())
     }
+    
+    // MARK: - Polished Navigation Button (For NavigationLink)
+    func polishedNavButton(title: String) -> some View {
+        Text(title)
+            .font(.title3)
+            .fontWeight(.bold)
+            .foregroundColor(.white)
+            .frame(maxWidth: .infinity, minHeight: 110)
+            .background(Color(red: 10/255, green: 57/255, blue: 102/255))
+            .cornerRadius(20)
+            .shadow(color: .black.opacity(0.15), radius: 6, x: 0, y: 4)
+
+    }
 }
 
 
@@ -144,7 +175,6 @@ struct ScaleButtonStyle: ButtonStyle {
             .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
     }
 }
-
 
 
 #Preview {
