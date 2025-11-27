@@ -9,6 +9,8 @@ import SwiftUI
 
 struct ContactsView: View {
     
+    @StateObject private var vm = ContactsViewModel()
+    
     var body: some View {
         ScrollView {
             VStack(spacing: 30) {
@@ -19,41 +21,32 @@ struct ContactsView: View {
                         .font(.largeTitle.bold())
                         .foregroundColor(Color(red: 10/255, green: 57/255, blue: 102/255))
                     
-                    Text("Sample test page")
+                    Text("Company Directory")
                         .font(.headline)
                         .foregroundColor(.gray)
                 }
                 .padding(.top, 30)
                 
                 
-                // Sample Contact Card
-                VStack(alignment: .leading, spacing: 12) {
-                    
-                    Text("John Doe")
-                        .font(.title3.bold())
-                        .foregroundColor(Color(red: 25/255, green: 40/255, blue: 70/255))
-                    
-                    Text("Safety Director")
-                        .foregroundColor(.gray)
-                    
-                    Text("Phone: (555) 123-4567")
-                        .foregroundColor(.gray)
+                // Loading
+                if vm.isLoading {
+                    ProgressView("Loading contacts…")
+                        .padding()
                 }
-                .padding(22)
-                .frame(maxWidth: .infinity)
-                .background(
-                    RoundedRectangle(cornerRadius: 22)
-                        .fill(Color.white)
-                        .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
-                        .shadow(color: Color.black.opacity(0.08), radius: 10, x: 0, y: 6)
-                        .overlay(
-                            Rectangle()
-                                .fill(Color(red: 10/255, green: 57/255, blue: 102/255))
-                                .frame(width: 6),
-                            alignment: .leading
-                        )
-                )
-                .padding(.horizontal)
+                
+                // Error message
+                if let error = vm.errorMessage {
+                    Text(error)
+                        .foregroundColor(.red)
+                        .padding()
+                }
+                
+                
+                // Contact Cards
+                ForEach(vm.contacts) { contact in
+                    contactCard(contact)
+                        .padding(.horizontal)
+                }
                 
                 Spacer().frame(height: 40)
             }
@@ -71,6 +64,46 @@ struct ContactsView: View {
         )
         .navigationTitle("Contacts")
         .navigationBarTitleDisplayMode(.inline)
+    }
+    
+    
+    // MARK: - Contact Card Style
+    func contactCard(_ contact: Contact) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            
+            Text(contact.fullName)
+                .font(.title3.bold())
+                .foregroundColor(Color(red: 25/255, green: 40/255, blue: 70/255))
+            
+            Text(contact.title)
+                .foregroundColor(.gray)
+            
+            Text("Company: \(contact.company)")
+                .foregroundColor(.gray)
+            
+            Text("Cell: \(contact.cellPhone)")
+                .foregroundColor(.gray)
+            
+            Text("Work: \(contact.workPhone)")
+                .foregroundColor(.gray)
+            
+            Text("Email: \(contact.email)")
+                .foregroundColor(.gray)
+        }
+        .padding(22)
+        .frame(maxWidth: .infinity)
+        .background(
+            RoundedRectangle(cornerRadius: 22)
+                .fill(Color.white)
+                .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
+                .shadow(color: Color.black.opacity(0.08), radius: 10, x: 0, y: 6)
+                .overlay(
+                    Rectangle()
+                        .fill(Color(red: 10/255, green: 57/255, blue: 102/255))
+                        .frame(width: 6),
+                    alignment: .leading
+                )
+        )
     }
 }
 
