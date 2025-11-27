@@ -227,7 +227,7 @@ struct IncidentReportView: View {
             MailView(
                 subject: "Incident Report Submission",
                 body: "Attached are the incident report files.",
-                recipients: ["elliottapptestemail@gmail.com"],
+                recipients: ["JeffT@ellcoky.com"],
                 attachments: buildAttachments()
             )
         }

@@ -184,7 +184,7 @@ struct ContentView: View {
                 MailView(
                     subject: "Receipt Submission",
                     body: "Attached is the receipt.",
-                    recipients: ["elliottapptestemail@gmail.com"],
+                    recipients: ["JeffT@ellcoky.com"],
                     attachments: [
                         AttachmentData(
                             data: data,
@@ -212,7 +212,7 @@ struct ContentView: View {
                 MailView(
                     subject: "Timesheet Submission",
                     body: "Attached is the timesheet.",
-                    recipients: ["elliottapptestemail@gmail.com"],
+                    recipients: ["JeffT@ellcoky.com"],
                     attachments: [
                         AttachmentData(
                             data: data,
