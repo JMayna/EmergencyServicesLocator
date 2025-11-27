@@ -82,16 +82,11 @@ struct ContentView: View {
                         
                         LazyVGrid(columns: columns, spacing: 20) {
                             
+                            // Incident Report
                             NavigationLink {
                                 IncidentReportView()
                             } label: {
                                 enterpriseCardNavButton(title: "Incident Report")
-                            }
-                            
-                            NavigationLink {
-                                SDSCategoryScreen()
-                            } label: {
-                                enterpriseCardNavButton(title: "SDS Sheets")
                             }
                         }
                         .padding(.horizontal)
@@ -121,11 +116,40 @@ struct ContentView: View {
                         .padding(.horizontal)
                     }
                     
+                    
+                    // ========================================================
+                    // MARK: - SAFETY DOCUMENTS (NEW SECTION)
+                    // ========================================================
+                    VStack(alignment: .leading, spacing: 16) {
+                        
+                        Text("Safety Documents")
+                            .font(.title2.bold())
+                            .padding(.leading)
+                            .foregroundColor(Color(red: 10/255, green: 57/255, blue: 102/255))
+                        
+                        LazyVGrid(columns: columns, spacing: 20) {
+                            
+                            // SDS Documents (moved from Operations)
+                            NavigationLink {
+                                SDSCategoryScreen()
+                            } label: {
+                                enterpriseCardNavButton(title: "SDS Documents")
+                            }
+                            
+                            // Emergency Services Locator (New)
+                            NavigationLink {
+                                EmergencyServicesView()
+                            } label: {
+                                enterpriseCardNavButton(title: "Emergency Services Locator")
+                            }
+                        }
+                        .padding(.horizontal)
+                    }
+                    
                     Spacer()
                         .frame(height: 40)
                 }
             }
-            // Background
             .background(
                 LinearGradient(
                     colors: [
@@ -167,6 +191,7 @@ struct ContentView: View {
             }
         }
         
+        
         // MARK: - Timesheet Camera
         .sheet(isPresented: $timesheetVM.showImagePicker) {
             ImagePicker(sourceType: .camera) { img in
@@ -196,9 +221,7 @@ struct ContentView: View {
     }
     
     
-    // ========================================================
     // MARK: - Enhanced Enterprise Card Buttons
-    // ========================================================
     
     func enterpriseCardButton(title: String, action: @escaping () -> Void = {}) -> some View {
         Button(action: action) {
@@ -213,11 +236,10 @@ struct ContentView: View {
     // MARK: - Shared Card Layout
     func enterpriseCardStyle(title: String) -> some View {
         HStack {
-            VStack(alignment: .leading, spacing: 6) {
-                Text(title)
-                    .font(.title3.weight(.semibold))
-                    .foregroundColor(Color(red: 25/255, green: 40/255, blue: 70/255))
-            }
+            Text(title)
+                .font(.title3.weight(.semibold))
+                .foregroundColor(Color(red: 25/255, green: 40/255, blue: 70/255))
+            
             Spacer()
         }
         .padding(22)
@@ -230,21 +252,10 @@ struct ContentView: View {
                 .overlay(
                     Rectangle()
                         .fill(Color(red: 10/255, green: 57/255, blue: 102/255))
-                        .frame(width: 6)
-                        .clipShape(
-                            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                        ),
+                        .frame(width: 6),
                     alignment: .leading
                 )
         )
-    }
-}
-
-
-// MARK: - No Bounce Highlight (Tap Animation Off)
-struct ScaleButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
     }
 }
 
