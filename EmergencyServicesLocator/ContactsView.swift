@@ -29,7 +29,9 @@ struct ContactsView: View {
         ScrollView {
             VStack(spacing: 30) {
                 
-                // Header
+                // --------------------------------------------------------
+                // MARK: - HEADER
+                // --------------------------------------------------------
                 VStack(spacing: 6) {
                     Text("Contacts")
                         .font(.largeTitle.bold())
@@ -42,13 +44,17 @@ struct ContactsView: View {
                 .padding(.top, 30)
                 
                 
+                // --------------------------------------------------------
                 // MARK: - SEARCH BAR
+                // --------------------------------------------------------
                 HStack {
                     Image(systemName: "magnifyingglass")
                         .foregroundColor(.gray)
                     
                     TextField("Search contacts…", text: $searchText)
-                        .textFieldStyle(.plain)
+                        .foregroundColor(Color(red: 25/255, green: 40/255, blue: 70/255))   // FIXED
+                        .textInputAutocapitalization(.none)
+                        .disableAutocorrection(true)
                 }
                 .padding()
                 .background(Color.white)
@@ -58,20 +64,28 @@ struct ContactsView: View {
                 .padding(.horizontal)
                 
                 
+                // --------------------------------------------------------
                 // MARK: - LOADING
+                // --------------------------------------------------------
                 if vm.isLoading {
                     ProgressView("Loading contacts…")
                         .padding()
                 }
                 
+                
+                // --------------------------------------------------------
                 // MARK: - ERROR
+                // --------------------------------------------------------
                 if let error = vm.errorMessage {
                     Text(error)
                         .foregroundColor(.red)
                         .padding()
                 }
                 
+                
+                // --------------------------------------------------------
                 // MARK: - CONTACT LIST
+                // --------------------------------------------------------
                 ForEach(filteredContacts) { contact in
                     contactCard(contact)
                         .padding(.horizontal)
@@ -96,7 +110,10 @@ struct ContactsView: View {
     }
     
     
-    // MARK: - Card UI
+    // --------------------------------------------------------
+    // MARK: - CONTACT CARD STYLE
+    // --------------------------------------------------------
+    
     func contactCard(_ contact: Contact) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             
