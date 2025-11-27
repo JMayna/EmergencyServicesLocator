@@ -10,6 +10,20 @@ import SwiftUI
 struct ContactsView: View {
     
     @StateObject private var vm = ContactsViewModel()
+    @State private var searchText = ""
+    
+    var filteredContacts: [Contact] {
+        if searchText.isEmpty { return vm.contacts }
+        
+        return vm.contacts.filter { contact in
+            contact.fullName.localizedCaseInsensitiveContains(searchText) ||
+            contact.title.localizedCaseInsensitiveContains(searchText) ||
+            contact.company.localizedCaseInsensitiveContains(searchText) ||
+            contact.cellPhone.localizedCaseInsensitiveContains(searchText) ||
+            contact.workPhone.localizedCaseInsensitiveContains(searchText) ||
+            contact.email.localizedCaseInsensitiveContains(searchText)
+        }
+    }
     
     var body: some View {
         ScrollView {
@@ -28,22 +42,37 @@ struct ContactsView: View {
                 .padding(.top, 30)
                 
                 
-                // Loading
+                // MARK: - SEARCH BAR
+                HStack {
+                    Image(systemName: "magnifyingglass")
+                        .foregroundColor(.gray)
+                    
+                    TextField("Search contacts…", text: $searchText)
+                        .textFieldStyle(.plain)
+                }
+                .padding()
+                .background(Color.white)
+                .cornerRadius(14)
+                .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
+                .shadow(color: .black.opacity(0.07), radius: 8, x: 0, y: 4)
+                .padding(.horizontal)
+                
+                
+                // MARK: - LOADING
                 if vm.isLoading {
                     ProgressView("Loading contacts…")
                         .padding()
                 }
                 
-                // Error message
+                // MARK: - ERROR
                 if let error = vm.errorMessage {
                     Text(error)
                         .foregroundColor(.red)
                         .padding()
                 }
                 
-                
-                // Contact Cards
-                ForEach(vm.contacts) { contact in
+                // MARK: - CONTACT LIST
+                ForEach(filteredContacts) { contact in
                     contactCard(contact)
                         .padding(.horizontal)
                 }
@@ -67,7 +96,7 @@ struct ContactsView: View {
     }
     
     
-    // MARK: - Contact Card Style
+    // MARK: - Card UI
     func contactCard(_ contact: Contact) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             
