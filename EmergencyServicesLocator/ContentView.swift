@@ -71,7 +71,7 @@ struct ContentView: View {
                     
                     
                     // ========================================================
-                    // MARK: - OPERATIONS
+                    // MARK: - OPERATIONS  (Contacts added here)
                     // ========================================================
                     VStack(alignment: .leading, spacing: 16) {
                         
@@ -87,6 +87,13 @@ struct ContentView: View {
                                 IncidentReportView()
                             } label: {
                                 enterpriseCardNavButton(title: "Incident Report")
+                            }
+                            
+                            // CONTACTS — NEW BUTTON
+                            NavigationLink {
+                                ContactsView()   // <-- Sample page for now
+                            } label: {
+                                enterpriseCardNavButton(title: "Contacts")
                             }
                         }
                         .padding(.horizontal)
@@ -118,7 +125,7 @@ struct ContentView: View {
                     
                     
                     // ========================================================
-                    // MARK: - SAFETY DOCUMENTS (NEW SECTION)
+                    // MARK: - SAFETY DOCUMENTS
                     // ========================================================
                     VStack(alignment: .leading, spacing: 16) {
                         
@@ -129,14 +136,12 @@ struct ContentView: View {
                         
                         LazyVGrid(columns: columns, spacing: 20) {
                             
-                            // SDS Documents (moved from Operations)
                             NavigationLink {
                                 SDSCategoryScreen()
                             } label: {
                                 enterpriseCardNavButton(title: "SDS Documents")
                             }
                             
-                            // Emergency Services Locator (New)
                             NavigationLink {
                                 EmergencyServicesView()
                             } label: {
@@ -221,7 +226,7 @@ struct ContentView: View {
     }
     
     
-    // MARK: - Enhanced Enterprise Card Buttons
+    // MARK: - Card Buttons (Shared)
     
     func enterpriseCardButton(title: String, action: @escaping () -> Void = {}) -> some View {
         Button(action: action) {
@@ -233,7 +238,6 @@ struct ContentView: View {
         enterpriseCardStyle(title: title)
     }
     
-    // MARK: - Shared Card Layout
     func enterpriseCardStyle(title: String) -> some View {
         HStack {
             Text(title)
