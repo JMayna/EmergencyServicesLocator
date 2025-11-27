@@ -24,12 +24,25 @@ struct EmergencyServicesView: View {
                 .padding(.top, 30)
                 
                 
+                // ========================================================
                 // BUTTON GRID — Matching ContentView.swift
+                // ========================================================
                 LazyVGrid(columns: columns, spacing: 22) {
                     
+                    // Ambulance (placeholder)
                     enterpriseCardNavButton(title: "Ambulance")
+                    
+                    // Rescue Squad (placeholder)
                     enterpriseCardNavButton(title: "Rescue Squad")
-                    enterpriseCardNavButton(title: "Fire")
+                    
+                    // FIRE — ***NOW LINKED TO NearbyFireStationView***
+                    NavigationLink {
+                        NearbyFireStationView()
+                    } label: {
+                        enterpriseCardNavButton(title: "Fire")
+                    }
+                    
+                    // Police (placeholder)
                     enterpriseCardNavButton(title: "Police")
                 }
                 .padding(.horizontal)
@@ -38,6 +51,8 @@ struct EmergencyServicesView: View {
                     .frame(height: 40)
             }
         }
+        
+        // Background (same style as ContentView)
         .background(
             LinearGradient(
                 colors: [
@@ -49,13 +64,14 @@ struct EmergencyServicesView: View {
             )
             .ignoresSafeArea()
         )
+        
         .navigationTitle("Emergency Services")
         .navigationBarTitleDisplayMode(.inline)
     }
     
     
     // ========================================================
-    // MARK: - Enterprise Card Style (Same as ContentView)
+    // MARK: - Enterprise Card Style (Same Card Look as Home)
     // ========================================================
     
     func enterpriseCardNavButton(title: String) -> some View {
@@ -84,5 +100,7 @@ struct EmergencyServicesView: View {
 }
 
 #Preview {
-    EmergencyServicesView()
+    NavigationStack {
+        EmergencyServicesView()
+    }
 }
