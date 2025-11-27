@@ -30,20 +30,34 @@ struct EmergencyServicesView: View {
                 LazyVGrid(columns: columns, spacing: 22) {
                     
                     // Ambulance (placeholder)
-                    enterpriseCardNavButton(title: "Ambulance")
+                    NavigationLink {
+                        NearbyAmbulanceView()
+                    } label: {
+                        enterpriseCardNavButton(title: "Ambulance")
+                    }
+
                     
                     // Rescue Squad (placeholder)
-                    enterpriseCardNavButton(title: "Rescue Squad")
+                    NavigationLink {
+                        NearbyRescueSquadView()
+                    } label: {
+                        enterpriseCardNavButton(title: "Rescue Squad")
+                    }
+
                     
-                    // FIRE — ***NOW LINKED TO NearbyFireStationView***
+                    // FIRE
                     NavigationLink {
                         NearbyFireStationView()
                     } label: {
                         enterpriseCardNavButton(title: "Fire")
                     }
-                    
-                    // Police (placeholder)
-                    enterpriseCardNavButton(title: "Police")
+                    //Police
+                    NavigationLink {
+                        NearbyPoliceStationView()
+                    } label: {
+                        enterpriseCardNavButton(title: "Police")
+                    }
+
                 }
                 .padding(.horizontal)
                 
