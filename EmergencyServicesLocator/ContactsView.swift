@@ -30,7 +30,7 @@ struct ContactsView: View {
             VStack(spacing: 30) {
                 
                 // --------------------------------------------------------
-                // MARK: - HEADER
+                // HEADER
                 // --------------------------------------------------------
                 VStack(spacing: 6) {
                     Text("Contacts")
@@ -45,14 +45,14 @@ struct ContactsView: View {
                 
                 
                 // --------------------------------------------------------
-                // MARK: - SEARCH BAR
+                // SEARCH BAR
                 // --------------------------------------------------------
                 HStack {
                     Image(systemName: "magnifyingglass")
                         .foregroundColor(.gray)
                     
                     TextField("Search contacts…", text: $searchText)
-                        .foregroundColor(Color(red: 25/255, green: 40/255, blue: 70/255))   // FIXED
+                        .foregroundColor(Color(red: 25/255, green: 40/255, blue: 70/255))
                         .textInputAutocapitalization(.none)
                         .disableAutocorrection(true)
                 }
@@ -65,7 +65,7 @@ struct ContactsView: View {
                 
                 
                 // --------------------------------------------------------
-                // MARK: - LOADING
+                // LOADING
                 // --------------------------------------------------------
                 if vm.isLoading {
                     ProgressView("Loading contacts…")
@@ -74,7 +74,7 @@ struct ContactsView: View {
                 
                 
                 // --------------------------------------------------------
-                // MARK: - ERROR
+                // ERROR
                 // --------------------------------------------------------
                 if let error = vm.errorMessage {
                     Text(error)
@@ -84,7 +84,7 @@ struct ContactsView: View {
                 
                 
                 // --------------------------------------------------------
-                // MARK: - CONTACT LIST
+                // CONTACT LIST
                 // --------------------------------------------------------
                 ForEach(filteredContacts) { contact in
                     contactCard(contact)
@@ -111,7 +111,7 @@ struct ContactsView: View {
     
     
     // --------------------------------------------------------
-    // MARK: - CONTACT CARD STYLE
+    // CONTACT CARD
     // --------------------------------------------------------
     
     func contactCard(_ contact: Contact) -> some View {
@@ -127,14 +127,35 @@ struct ContactsView: View {
             Text("Company: \(contact.company)")
                 .foregroundColor(.gray)
             
-            Text("Cell: \(contact.cellPhone)")
-                .foregroundColor(.gray)
             
-            Text("Work: \(contact.workPhone)")
-                .foregroundColor(.gray)
+            // -------------------------------
+            // TAP-TO-CALL: CELL PHONE
+            // -------------------------------
+            if let cellURL = URL(string: "tel://\(contact.cellPhone.onlyDigits)") {
+                Link("Cell: \(contact.cellPhone)", destination: cellURL)
+                    .foregroundColor(Color.blue.opacity(0.8))
+                    .underline()
+            }
             
-            Text("Email: \(contact.email)")
-                .foregroundColor(.gray)
+            // -------------------------------
+            // TAP-TO-CALL: WORK PHONE
+            // -------------------------------
+            if let workURL = URL(string: "tel://\(contact.workPhone.onlyDigits)") {
+                Link("Work: \(contact.workPhone)", destination: workURL)
+                    .foregroundColor(Color.blue.opacity(0.8))
+                    .underline()
+            }
+            
+            
+            // -------------------------------
+            // TAP-TO-EMAIL
+            // -------------------------------
+            if let emailURL = URL(string: "mailto:\(contact.email)") {
+                Link("Email: \(contact.email)", destination: emailURL)
+                    .foregroundColor(Color.blue.opacity(0.8))
+                    .underline()
+            }
+            
         }
         .padding(22)
         .frame(maxWidth: .infinity)
@@ -156,5 +177,15 @@ struct ContactsView: View {
 #Preview {
     NavigationStack {
         ContactsView()
+    }
+}
+
+
+// ------------------------------------------------------------
+// DIGITS-ONLY EXTENSION (for tap-to-call)
+// ------------------------------------------------------------
+extension String {
+    var onlyDigits: String {
+        self.filter { $0.isNumber }
     }
 }
