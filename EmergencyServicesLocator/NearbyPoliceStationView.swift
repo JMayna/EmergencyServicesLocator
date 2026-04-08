@@ -75,6 +75,7 @@ struct NearbyPoliceStationView: View {
             Text(station.name ?? "Unknown Police Station")
                 .font(.title3.bold())
                 .foregroundColor(Color(red: 25/255, green: 40/255, blue: 70/255))
+                .multilineTextAlignment(.leading)
             
             if let address = station.placemark.postalAddress {
                 let formatter = CNPostalAddressFormatter()
@@ -82,6 +83,7 @@ struct NearbyPoliceStationView: View {
                 
                 Text(formatted)
                     .foregroundColor(.gray)
+                    .multilineTextAlignment(.leading)
             }
             
             if let phone = station.phoneNumber {
@@ -95,7 +97,7 @@ struct NearbyPoliceStationView: View {
             }
         }
         .padding(22)
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: 22)
                 .fill(Color.white)

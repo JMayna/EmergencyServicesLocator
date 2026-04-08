@@ -11,15 +11,26 @@ class EmailViewModel: ObservableObject {
     @Published var selectedImage: UIImage?
     @Published var showImagePicker = false
     @Published var showMailView = false
+    @Published var showMailUnavailableAlert = false
+    @Published var mailErrorMessage: String?
     
     func startFlow() {
+        selectedImage = nil
         showImagePicker = true
     }
     
     func imagePicked(_ image: UIImage?) {
         selectedImage = image
-        if image != nil {
+    }
+    
+    func presentMailIfAvailable() {
+        guard selectedImage != nil else { return }
+        
+        if MFMailComposeViewController.canSendMail() {
             showMailView = true
+        } else {
+            mailErrorMessage = "Mail is not configured on this device."
+            showMailUnavailableAlert = true
         }
     }
 }
@@ -29,15 +40,26 @@ class TimesheetViewModel: ObservableObject {
     @Published var selectedImage: UIImage?
     @Published var showImagePicker = false
     @Published var showMailView = false
+    @Published var showMailUnavailableAlert = false
+    @Published var mailErrorMessage: String?
     
     func startFlow() {
+        selectedImage = nil
         showImagePicker = true
     }
     
     func imagePicked(_ image: UIImage?) {
         selectedImage = image
-        if image != nil {
+    }
+    
+    func presentMailIfAvailable() {
+        guard selectedImage != nil else { return }
+        
+        if MFMailComposeViewController.canSendMail() {
             showMailView = true
+        } else {
+            mailErrorMessage = "Mail is not configured on this device."
+            showMailUnavailableAlert = true
         }
     }
 }
@@ -170,7 +192,9 @@ struct ContentView: View {
         
         
         // MARK: - Receipt Camera
-        .sheet(isPresented: $receiptVM.showImagePicker) {
+        .sheet(isPresented: $receiptVM.showImagePicker, onDismiss: {
+            receiptVM.presentMailIfAvailable()
+        }) {
             ImagePicker(sourceType: .camera) { img in
                 receiptVM.imagePicked(img)
             }
@@ -195,10 +219,17 @@ struct ContentView: View {
                 )
             }
         }
+        .alert("Cannot Send Mail", isPresented: $receiptVM.showMailUnavailableAlert) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(receiptVM.mailErrorMessage ?? "Mail is not available on this device.")
+        }
         
         
         // MARK: - Timesheet Camera
-        .sheet(isPresented: $timesheetVM.showImagePicker) {
+        .sheet(isPresented: $timesheetVM.showImagePicker, onDismiss: {
+            timesheetVM.presentMailIfAvailable()
+        }) {
             ImagePicker(sourceType: .camera) { img in
                 timesheetVM.imagePicked(img)
             }
@@ -222,6 +253,11 @@ struct ContentView: View {
                     ]
                 )
             }
+        }
+        .alert("Cannot Send Mail", isPresented: $timesheetVM.showMailUnavailableAlert) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(timesheetVM.mailErrorMessage ?? "Mail is not available on this device.")
         }
     }
     

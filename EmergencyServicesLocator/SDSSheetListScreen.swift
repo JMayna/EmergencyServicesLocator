@@ -8,8 +8,10 @@ struct SDSSheetListScreen: View {
     var body: some View {
         List {
             ForEach(sheets.keys.sorted(), id: \.self) { name in
-                NavigationLink(name) {
-                    PDFViewer(urlString: loader.fullURL(for: sheets[name]!))
+                if let file = sheets[name] {
+                    NavigationLink(name) {
+                        PDFViewer(urlString: loader.fullURL(for: file))
+                    }
                 }
             }
         }

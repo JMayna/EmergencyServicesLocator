@@ -75,6 +75,7 @@ struct NearbyAmbulanceView: View {
             Text(service.name ?? "Unknown Ambulance Service")
                 .font(.title3.bold())
                 .foregroundColor(Color(red: 25/255, green: 40/255, blue: 70/255))
+                .multilineTextAlignment(.leading)
             
             if let address = service.placemark.postalAddress {
                 let formatter = CNPostalAddressFormatter()
@@ -82,6 +83,7 @@ struct NearbyAmbulanceView: View {
                 
                 Text(formatted)
                     .foregroundColor(.gray)
+                    .multilineTextAlignment(.leading)
             }
             
             if let phone = service.phoneNumber {
@@ -95,7 +97,7 @@ struct NearbyAmbulanceView: View {
             }
         }
         .padding(22)
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: 22)
                 .fill(Color.white)

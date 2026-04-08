@@ -24,7 +24,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1504240B2ED3B39300B5CDBC /* EmergencyServicesLocator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EmergencyServicesLocator.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1504240B2ED3B39300B5CDBC /* Elliott Tools.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Elliott Tools.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		150424182ED3B39400B5CDBC /* EmergencyServicesLocatorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EmergencyServicesLocatorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		150424222ED3B39400B5CDBC /* EmergencyServicesLocatorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EmergencyServicesLocatorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -106,7 +106,7 @@
 		1504240C2ED3B39300B5CDBC /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1504240B2ED3B39300B5CDBC /* EmergencyServicesLocator.app */,
+				1504240B2ED3B39300B5CDBC /* Elliott Tools.app */,
 				150424182ED3B39400B5CDBC /* EmergencyServicesLocatorTests.xctest */,
 				150424222ED3B39400B5CDBC /* EmergencyServicesLocatorUITests.xctest */,
 			);
@@ -135,7 +135,7 @@
 			packageProductDependencies = (
 			);
 			productName = EmergencyServicesLocator;
-			productReference = 1504240B2ED3B39300B5CDBC /* EmergencyServicesLocator.app */;
+			productReference = 1504240B2ED3B39300B5CDBC /* Elliott Tools.app */;
 			productType = "com.apple.product-type.application";
 		};
 		150424172ED3B39400B5CDBC /* EmergencyServicesLocatorTests */ = {
@@ -434,8 +434,8 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = Maynard.EmergencyServicesLocator;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = Maynard.ElliotTools;
+				PRODUCT_NAME = "Elliott Tools";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -465,8 +465,8 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = Maynard.EmergencyServicesLocator;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = Maynard.ElliotTools;
+				PRODUCT_NAME = "Elliott Tools";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

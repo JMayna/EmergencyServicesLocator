@@ -25,7 +25,10 @@ struct PDFViewer: View {
     }
     
     private func loadPDF() {
-        guard let url = URL(string: urlString) else { return }
+        guard let url = URL(string: urlString) else {
+            isLoading = false
+            return
+        }
         
         URLSession.shared.dataTask(with: url) { data, _, _ in
             if let data = data, let pdf = PDFDocument(data: data) {
